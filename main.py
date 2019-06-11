@@ -2,7 +2,7 @@ from utils import *
 from lib import *
 import cv2
 import numpy as np
-#from lib import display
+# from lib import display
 
 
 if __name__ == "__main__":
@@ -11,30 +11,29 @@ if __name__ == "__main__":
     Ratliff
     """
 
-    # timer.tic()
+    timer.tic()
 
-    #Ratliff = ratliff.Ratliff("images/image_00001.png")
+    Ratliff = ratliff.Ratliff("images/image_00001.tiff")
 
-    #images_r = Ratliff.process()
+    images_r = Ratliff.process()
 
-    # timer.toc()
+    timer.toc()
 
-    #display.subplot(images_r, 'i0, i45, i90, i135')
+    display.subplot(images_r, 'i0, i45, i90, i135')
 
-    #(inten, aop, dop) = polaparam.polarization(images_r)
+    (inten, aop, dop) = polaparam.polarization(images_r)
 
-    #rgb = polaparam.rgb(inten, aop, dop)
+    rgb = polaparam.rgb(inten, aop, dop)
 
-    #repres = polaparam.representation(inten, aop, dop, rgb)
+    repres = polaparam.representation(inten, aop, dop, rgb)
 
-    #display.plot(repres, 'Intensity, AoP, DoLP, HSL')
+    display.plot(repres, 'Intensity, AoP, DoLP, HSL')
 
     """
     Bicubic
     """
-
     timer.tic()
-    Bicubic = bicubic.Bicubic("images/image_00001.png")
+    Bicubic = bicubic.Bicubic("images/image_00001.tiff")
 
     images_r = Bicubic.process()
 
@@ -45,8 +44,10 @@ if __name__ == "__main__":
     (inten, aop, dop) = polaparam.polarization(images_r)
 
     # test
-    np.savetxt("foo.csv", aop, delimiter=",")
-    display.plot(aop, 'AoP')
+    #np.savetxt("aop.csv", aop, delimiter=",")
+    #np.savetxt("dop.csv", dop, delimiter=",")
+    #np.savetxt("inten.csv", inten, delimiter=",")
+    # display.plot(aop, 'AoP')
 
     rgb = polaparam.rgb(inten, aop, dop)
 
