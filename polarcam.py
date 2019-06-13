@@ -16,6 +16,7 @@ from matplotlib.colors import hsv_to_rgb
 import math
 from scipy.interpolate import CubicSpline
 from lib import *
+import os
 
 
 # -- Path of the flatfield file
@@ -328,8 +329,14 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
 
 if __name__ == '__main__':
-    POLA = Polaim('images/image_00001.tiff', method='intensity_correlation')
-    pl.imshow(POLA.rgb_aop(dop_min=0))
-    pl.show()
-    pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
-    pl.show()
+    # pid = os.getpid()
+    #
+    # print(f'PID is : {pid}')
+    # input("Press Enter to continue...")
+    #os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
+
+    POLA = Polaim('images/image_00001.tiff', method='newton')
+    # pl.imshow(POLA.rgb_aop(dop_min=0))
+    # pl.show()
+    # pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
+    # pl.show()
