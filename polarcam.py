@@ -304,6 +304,12 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
         return order.ordering(R, raw.dtype, pixels_order.value)
 
+    elif method == 'intensity_correlation':
+
+        R = intensityCorr.intensity_correlation(np.array(raw, dtype=np.double))
+
+        return order.ordering(R, raw.dtype, pixels_order.value)
+
     else:
         raise SystemExit(f"ERROR. \'{method}\' is not a method.")
 
@@ -322,7 +328,7 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
 
 if __name__ == '__main__':
-    POLA = Polaim('images/image_00001.tiff', method='test')
+    POLA = Polaim('images/image_00001.tiff', method='intensity_correlation')
     pl.imshow(POLA.rgb_aop(dop_min=0))
     pl.show()
     pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
