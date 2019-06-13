@@ -1,1 +1,1 @@
-__all__ = ['ratliff', 'polaparam', 'bicubic']
+__all__ = ['ratliff', 'polaparam', 'bicubic', 'bicubicSpline']

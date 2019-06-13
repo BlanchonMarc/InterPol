@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
 
 
-def cubic_spline(raw):
+def bicubic_spline(raw):
     #raw = plt.imread(raw)
     (m, n) = raw.shape
 
