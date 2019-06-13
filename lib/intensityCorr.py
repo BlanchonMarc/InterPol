@@ -30,9 +30,10 @@ def comparison(verror, herror, coeff, img, img_inv, i, j, first, second):
 # with intensity correlation
 def intensity_correlation(raw):
     (rows, cols) = raw.shape
-    img_inv = np.zeros(rows, cols)
-    img_errorh = np.zeros(rows, cols)
-    img_errorv = np.zeros(rows, cols)
+    img = raw
+    img_inv = np.zeros((rows, cols))
+    img_errorh = np.zeros((rows, cols))
+    img_errorv = np.zeros((rows, cols))
 
     H = np.array([[1, 0, 1], [0, 0, 0], [-1, 0, -1]])
     V = np.array([[1, 0, -1], [0, 0, 0], [1, 0, -1]])
@@ -66,8 +67,8 @@ def intensity_correlation(raw):
     # Diagonal Direction Interpolation
     aa = 1
 
-    for i in range(3, rows - 2):
-        for j in range(3, cols - 2):
+    for i in range(3, rows - 3):
+        for j in range(3, cols - 3):
             d1 = abs(img[i - 1, j + 1] - img[i - 3, j + 3]) + abs(img[i + 1, j - 1] - img[i - 1, j + 1]) + abs(img[i + 3, j - 3] - img[i + 1, j - 1]) + abs(img[i - 1, j - 1] - img[i - 3, j + 1]) + abs(img[i + 1, j - 3] - img[i - 1, j - 1]) + abs(
                 img[i - 1, j - 3] - img[i - 3, j - 1]) + abs(img[i + 1, j + 1] - img[i - 1, j + 3]) + abs(img[i + 3, j - 1] - img[i + 1, j + 1]) + abs(img[i + 3, j + 1] - img[i + 1, j + 3]) + abs(img[i + 2, j - 2] + img[i - 2, j + 2] - 2 * img[i, j])
             d2 = abs(img[i - 1, j - 1] - img[i - 3, j - 3]) + abs(img[i + 1, j + 1] - img[i - 1, j - 1]) + abs(img[i + 3, j + 3] - img[i + 1, j + 1]) + abs(img[i - 3, j - 1] - img[i - 1, j + 1]) + abs(img[i + 1, j + 3] - img[i - 1, j + 1]) + abs(
@@ -82,8 +83,8 @@ def intensity_correlation(raw):
 
     coeff = 1
 
-    for i in range(3, rows - 2):
-        for j in range(3, cols - 2):
+    for i in range(3, rows - 3):
+        for j in range(3, cols - 3):
             verror = np.sum(img_errorh[i - 2:i + 3:2, j - 2:j + 3:2])
             herror = np.sum(img_errorh[i - 2:i + 3:2, j - 2:j + 3:2])
 

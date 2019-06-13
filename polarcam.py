@@ -332,3 +332,4 @@ if __name__ == '__main__':
     pl.imshow(POLA.rgb_aop(dop_min=0))
     pl.show()
     pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
+    pl.show()
