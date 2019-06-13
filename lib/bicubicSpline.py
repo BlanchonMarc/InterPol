@@ -9,7 +9,7 @@ from scipy.interpolate import CubicSpline
 
 
 def bicubic_spline(raw):
-    #raw = plt.imread(raw)
+    # raw = plt.imread(raw)
     (m, n) = raw.shape
 
     img1 = np.zeros((m, n))
@@ -35,11 +35,10 @@ def bicubic_spline(raw):
 
     pp1 = CubicSpline(x1, y1)
 
-    img1[0:m-1, 0:n - 1] = pp1(np.arange(0, m - 1))
+    img1[0:m - 1, 0:n - 1] = pp1(np.arange(0, m - 1))
 
-    img1[m-1, :] = img1[m - 2, :]
-    img1[:, n-1] = img1[:, n - 2]
-
+    img1[m - 1, :] = img1[m - 2, :]
+    img1[:, n - 1] = img1[:, n - 2]
 
     # img2
 
@@ -55,11 +54,10 @@ def bicubic_spline(raw):
 
     pp1 = CubicSpline(x1, y1)
 
-    img2[0:m-1, 1:n] = pp1(np.arange(0, m - 1))
+    img2[0:m - 1, 1:n] = pp1(np.arange(0, m - 1))
 
-    img2[m-1, :] = img2[m-2, :]
+    img2[m - 1, :] = img2[m - 2, :]
     img2[:, 0] = img2[:, 1]
-
 
     # img3
 
@@ -75,11 +73,10 @@ def bicubic_spline(raw):
 
     pp1 = CubicSpline(x1, y1)
 
-    img3[1:m, 1:n] = pp1(np.arange(1, m ))
+    img3[1:m, 1:n] = pp1(np.arange(1, m))
 
     img3[0, :] = img3[1, :]
     img3[:, 0] = img3[:, 1]
-
 
     # img4
 
@@ -88,18 +85,17 @@ def bicubic_spline(raw):
 
     pp = CubicSpline(x, np.transpose(y))
 
-    img4[1::2, 0:n-1] = np.transpose(pp(np.arange(0, n-1)))
+    img4[1::2, 0:n - 1] = np.transpose(pp(np.arange(0, n - 1)))
 
     x1 = np.arange(1, m, 2)
     y1 = img3[1::2, 0:n]
 
     pp1 = CubicSpline(x1, y1)
 
-    img4[1:m, 0:n] = pp1(np.arange(1, m ))
+    img4[1:m, 0:n] = pp1(np.arange(1, m))
 
     img4[0, :] = img4[1, :]
-    img4[:, n-1] = img4[:, n-2]
-
+    img4[:, n - 1] = img4[:, n - 2]
 
     return np.dstack((img1, img2, img3, img4))
     # print(img4.shape)
@@ -108,5 +104,5 @@ def bicubic_spline(raw):
 
 
 # test
-if __name__ == '__main__':
-    cubic_spline('/Users/marc/Github/InterPol/images/image_00001.tiff')
+# if __name__ == '__main__':
+#     bicubic_spline('/Users/marc/Github/InterPol/images/image_00001.tiff')
