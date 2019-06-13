@@ -1,1 +1,1 @@
-__all__ = ['display', 'timer']
+__all__ = ['display', 'timer', 'test_images']

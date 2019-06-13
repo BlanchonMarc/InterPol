@@ -325,8 +325,7 @@ def raw2quad(self, raw, method='none', pixels_order=Pixorder.polarcamV2):
     images = np.zeros((4,) + raw.shape)
     for (j, o) in enumerate(offsets):
         for ide in range(4):
-            images[j, o[ide][0]::2, o[ide][1]
-                ::2] = convs[ide][o[ide][0]::2, o[ide][1]::2]
+            images[j, o[ide][0]::2, o[ide][1]::2] = convs[ide][o[ide][0]::2, o[ide][1]::2]
 
     self.images = np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
 
@@ -341,9 +340,10 @@ if __name__ == '__main__':
     # os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
 
     timer.tic()
-    POLA = Polaim('images/image_00001.tiff', method='none')
+    POLA = Polaim('images/image_00001.tiff', method='bilinear')
     timer.toc()
-    print(POLA.rgb_pola().shape)
+
+    test_images.create_test_img(POLA)
 
     # pl.imshow(POLA.rgb_aop(dop_min=0))
     # pl.show()
