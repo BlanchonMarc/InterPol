@@ -343,7 +343,7 @@ if __name__ == '__main__':
     POLA = Polaim('images/image_00001.tiff', method='bilinear')
     timer.toc()
 
-    test_images.create_test_img(POLA)
+    # test_images.create_test_img(POLA)
 
     # pl.imshow(POLA.rgb_aop(dop_min=0))
     # pl.show()

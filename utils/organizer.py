@@ -9,20 +9,20 @@ def image_saver(obj, f_name):
     path_gt = 'benchmark/groundtruth/'
     if f_name.endswith('/'):
         f_name = f_name[:-1]
-    if not os.path.exists(f'{path_gt}{fname}'):
+    if not os.path.exists(f'{path_gt}{f_name}'):
         try:
-            os.makedirs(f'{path_gt}{fname}')
-            os.makedirs(f'{path_gt}{fname}/Intensity')
-            os.makedirs(f'{path_gt}{fname}/Stokes')
+            os.makedirs(f'{path_gt}{f_name}')
+            os.makedirs(f'{path_gt}{f_name}/Intensity')
+            os.makedirs(f'{path_gt}{f_name}/Stokes')
         except FileExistsError:
             # directory already exists
             pass
 
     names = ['i0.png', 'i45.png', 'i90.png', 'i135.png']
 
-    if not os.path.exists(f'{path_gt}{fname}/Intensity'):
+    if not os.path.exists(f'{path_gt}{f_name}/Intensity'):
         try:
-            os.makedirs(f'{path_gt}{fname}/Intensity')
+            os.makedirs(f'{path_gt}{f_name}/Intensity')
         except FileExistsError:
             # directory already exists
             pass
@@ -33,13 +33,13 @@ def image_saver(obj, f_name):
 
     imsave(f'{path_gt}{f_name}/rgb_aop.png', obj.rgb_aop())
 
-    imsave(f'{path_gt}{f_name}/rgb_aop.png', obj.rgb_pola())
+    imsave(f'{path_gt}{f_name}/rgb_pola.png', obj.rgb_pola())
 
     names = ['s0.png', 's1.png', 's2.png']
 
-    if not os.path.exists(f'{path_gt}{fname}/Stokes'):
+    if not os.path.exists(f'{path_gt}{f_name}/Stokes'):
         try:
-            os.makedirs(f'{path_gt}{fname}/Stokes')
+            os.makedirs(f'{path_gt}{f_name}/Stokes')
         except FileExistsError:
             # directory already exists
             pass
