@@ -1,0 +1,12 @@
+Method							Time
+
+
+None 							0.021828889846801758 s
+Linear							0.07734489440917969 s
+Bilinear						0.08898615837097168 s
+conv_bicubic						49.0295569896698 s
+weighted_b3						0.10820794105529785 s
+weighted_b4						0.10875797271728516 s
+Newton							18.261152029037476 s
+bicubic_spline						0.13873934745788574 s
+intensity_correlation					9.983970880508423 s

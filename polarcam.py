@@ -16,6 +16,7 @@ from matplotlib.colors import hsv_to_rgb
 import math
 from scipy.interpolate import CubicSpline
 from lib import *
+from utils import *
 import os
 
 
@@ -334,8 +335,9 @@ if __name__ == '__main__':
     # print(f'PID is : {pid}')
     # input("Press Enter to continue...")
     # os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
-
-    POLA = Polaim('images/image_00001.tiff', method='linear')
+    timer.tic()
+    POLA = Polaim('images/image_00001.tiff', method='none')
+    timer.toc()
     # pl.imshow(POLA.rgb_aop(dop_min=0))
     # pl.show()
     # pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
