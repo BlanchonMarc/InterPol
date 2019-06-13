@@ -1,4 +1,4 @@
-from bicubicSpline import *
+from .bicubicSpline import *
 import numpy as np
 from scipy.signal import convolve2d
 import math

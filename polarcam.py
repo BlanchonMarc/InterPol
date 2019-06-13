@@ -305,7 +305,7 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
         return order.ordering(R, raw.dtype, pixels_order.value)
 
     else:
-        raise SystemExit(f"{method} is not a method.")
+        raise SystemExit(f"ERROR. \'{method}\' is not a method.")
 
     convs = [convolve2d(raw, k, mode='same') for k in kernels]
     offsets = [[(0, 0), (0, 1), (1, 1), (1, 0)],
@@ -322,7 +322,7 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
 
 if __name__ == '__main__':
-    POLA = Polaim('images/image_00001.tiff', method='newton')
+    POLA = Polaim('images/image_00001.tiff', method='test')
     pl.imshow(POLA.rgb_aop(dop_min=0))
     pl.show()
     pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
