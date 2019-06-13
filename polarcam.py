@@ -246,12 +246,7 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
         R = bicubicConv.conv_bicubic(np.array(raw, dtype=np.double))
 
-        images = np.zeros((4, R.shape[0], R.shape[1]))
-
-        for i in range(4):
-            images[i, :, :] = np.array(R[:, :, i], dtype=np.double)
-
-        return np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
+        return order.ordering(R, raw.dtype, pixels_order.value)
 
     elif method == 'weightedb3':
         b = np.sqrt(2) / 2 / (np.sqrt(2) / 2 + np.sqrt(10))
@@ -301,23 +296,13 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
     elif method == 'newton':
         R = newton.newton_polynomial(np.array(raw, dtype=np.double))
 
-        images = np.zeros((4, R.shape[0], R.shape[1]))
-
-        for i in range(4):
-            images[i, :, :] = np.array(R[:, :, i], dtype=np.double)
-
-        return np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
+        return order.ordering(R, raw.dtype, pixels_order.value)
 
     elif method == 'bicubic_spline':
 
         R = bicubicSpline.bicubic_spline(np.array(raw, dtype=np.double))
 
-        images = np.zeros((4, R.shape[0], R.shape[1]))
-
-        for i in range(4):
-            images[i, :, :] = np.array(R[:, :, i], dtype=np.double)
-
-        return np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
+        return order.ordering(R, raw.dtype, pixels_order.value)
 
     else:
         raise SystemExit(f"{method} is not a method.")
@@ -337,7 +322,7 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
 
 if __name__ == '__main__':
-    POLA = Polaim('images/image_00001.tiff', method='conv_bicubic')
+    POLA = Polaim('images/image_00001.tiff', method='newton')
     pl.imshow(POLA.rgb_aop(dop_min=0))
     pl.show()
     pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
