@@ -1,4 +1,5 @@
 *.csv
+benchmark/groundtruth/
 
 *.py~
 .DS_Store
