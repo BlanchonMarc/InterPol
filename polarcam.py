@@ -94,14 +94,15 @@ class Polaim():
         # self.raw = np.asarray((raw * FLATF) / FLATF.max(), dtype=self.raw.dtype)
 
         # --- Extract the 4 images using interpolation technics
-        images = raw2quad(raw, method=method, pixels_order=pixels_order)
+        self.images = raw2quad(self, raw, method=method,
+                               pixels_order=pixels_order)
 
         # --- Compute the 3 stokes parameters
         mat = np.array([[0.5, 0.5, 0.5, 0.5],
                         [1.0, 0.0, -1., 0.0],
                         [0.0, 1.0, 0.0, -1.]])
 
-        self.stokes = np.tensordot(mat, images, 1)
+        self.stokes = np.tensordot(mat, self.images, 1)
 
         # --- Error estimation
         imat = 0.5 * np.array([[1, 1, 0.],
@@ -110,7 +111,7 @@ class Polaim():
                                [1, 0, -1]])
 
         self.error = sum(
-            (images - np.tensordot(np.dot(imat, mat), images, 1))**2, 0)
+            (self.images - np.tensordot(np.dot(imat, mat), self.images, 1))**2, 0)
 
     @property
     def inte(self):
@@ -203,7 +204,7 @@ class Polaim():
 # %% Functions
 
 
-def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
+def raw2quad(self, raw, method='none', pixels_order=Pixorder.polarcamV2):
     """Convert a raw image from polarcam into a list of ordered images
     [I0, I45, I90, I135]. If the parameter `method` is set to none the
     output images will have half size of the original image.
@@ -229,11 +230,11 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
     """
     if method == 'none':
-        images = np.array([raw[0::2, 0::2],  # 0
-                           raw[0::2, 1::2],  # 1
-                           raw[1::2, 1::2],  # 2
-                           raw[1::2, 0::2]])  # 3
-        return images[pixels_order.value, :, :]
+        self.images = np.array([raw[0::2, 0::2],  # 0
+                                raw[0::2, 1::2],  # 1
+                                raw[1::2, 1::2],  # 2
+                                raw[1::2, 0::2]])  # 3
+        return self.images[pixels_order.value, :, :]
     if method == 'linear':
         kernels = [np.array([[1, 0], [0, 0.]]),
                    np.array([[0, 1], [0, 0.]]),
@@ -297,19 +298,19 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
 
     elif method == 'newton':
         R = newton.newton_polynomial(np.array(raw, dtype=np.double))
-
+        self.images = order.ordering(R, raw.dtype, pixels_order.value)
         return order.ordering(R, raw.dtype, pixels_order.value)
 
     elif method == 'bicubic_spline':
 
         R = bicubicSpline.bicubic_spline(np.array(raw, dtype=np.double))
-
+        self.images = order.ordering(R, raw.dtype, pixels_order.value)
         return order.ordering(R, raw.dtype, pixels_order.value)
 
     elif method == 'intensity_correlation':
 
         R = intensityCorr.intensity_correlation(np.array(raw, dtype=np.double))
-
+        self.images = order.ordering(R, raw.dtype, pixels_order.value)
         return order.ordering(R, raw.dtype, pixels_order.value)
 
     else:
@@ -324,7 +325,10 @@ def raw2quad(raw, method='none', pixels_order=Pixorder.polarcamV2):
     images = np.zeros((4,) + raw.shape)
     for (j, o) in enumerate(offsets):
         for ide in range(4):
-            images[j, o[ide][0]::2, o[ide][1]::2] = convs[ide][o[ide][0]::2, o[ide][1]::2]
+            images[j, o[ide][0]::2, o[ide][1]
+                ::2] = convs[ide][o[ide][0]::2, o[ide][1]::2]
+
+    self.images = np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
 
     return np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
 
@@ -336,8 +340,9 @@ if __name__ == '__main__':
     # input("Press Enter to continue...")
     # os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
     timer.tic()
-    POLA = Polaim('images/image_00001.tiff', method='none')
+    POLA = Polaim('images/image_00001.tiff', method='bilinear')
     timer.toc()
+    print(POLA.images.shape)
     # pl.imshow(POLA.rgb_aop(dop_min=0))
     # pl.show()
     # pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
