@@ -333,9 +333,9 @@ if __name__ == '__main__':
     #
     # print(f'PID is : {pid}')
     # input("Press Enter to continue...")
-    #os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
+    # os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
 
-    POLA = Polaim('images/image_00001.tiff', method='newton')
+    POLA = Polaim('images/image_00001.tiff', method='linear')
     # pl.imshow(POLA.rgb_aop(dop_min=0))
     # pl.show()
     # pl.imshow(POLA.rgb_pola(dop_max=0.4, dop_min=0))
