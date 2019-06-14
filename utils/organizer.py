@@ -6,7 +6,7 @@ import os
 
 # Create test images from interpolation to test metrics benchmarking
 def image_saver(obj, f_name):
-    path_gt = 'benchmark/groundtruth/'
+    path_gt = 'benchmark/out_img/'
     if f_name.endswith('/'):
         f_name = f_name[:-1]
     if not os.path.exists(f'{path_gt}{f_name}'):

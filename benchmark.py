@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     image_name = 'image_00001'
     image_path = 'images/image_00001.tiff'
-    path_gt = 'benchmark/groundtruth/'
+    path_gt = 'benchmark/out_img/'
 
     if test_images:
         POLA = Polaim(image_path, method='bilinear')

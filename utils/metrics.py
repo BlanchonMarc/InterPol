@@ -7,9 +7,11 @@ import math
 import cv2
 import sklearn.metrics as skm
 
+# Some extraction from https://github.com/andrewekhalel/sewar/
+
 
 # Peak Signal to Noise Ratio
-def imSNR(gt, im):
+def PSNR(gt, im):
     mse = np.mean((gt - im) ** 2)
     if mse == 0:
         return 100
