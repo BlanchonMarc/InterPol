@@ -7,9 +7,8 @@ import math
 import cv2
 import sklearn.metrics as skm
 
-# imeak Signal to Noise Ratio
 
-
+# Peak Signal to Noise Ratio
 def imSNR(gt, im):
     mse = np.mean((gt - im) ** 2)
     if mse == 0:
@@ -24,7 +23,8 @@ def Cross_Corr_2D(gt, im):
 
 
 # Mutual information
-# I(X;Y) = \sum_{y \in Y} \sum_{x \in X} im(x,y) \log{ \left(\frac{im(x,y)}{im(x)\,im(y)}\right) }
+# I(X;Y) = \sum_{y \in Y} \sum_{x \in X} im(x,y)
+# \log{ \left(\frac{im(x,y)}{im(x)\,im(y)}\right) }
 def mutual_information(gt, im, bins=255):
     hist_2d, x_edges, y_edges = np.histogram2d(gt.ravel(),
                                                im.ravel(),
