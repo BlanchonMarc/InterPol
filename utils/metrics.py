@@ -142,3 +142,46 @@ def ssim(gt, im, ws=11, C1=0.01, C2=0.03, MAX=None,
     cs_map = (2 * sigmagt_im + C2) / (sigmagt_sq + sigmaim_sq + C2)
 
     return np.mean(ssim_map), np.mean(cs_map)
+
+
+# Pixel Based Visual Information Fidelity
+def PBVIF(gt, im, sigma_nsq=2):
+    EPS = 1e-10
+    num = 0.0
+    den = 0.0
+    for scale in range(1, 5):
+        N = 2.0**(4 - scale + 1) + 1
+        win = fspecial(Filter.GAUSSIAN, ws=N, sigma=N / 5)
+
+        if scale > 1:
+            gt = filter2(gt, win, 'valid')[::2, ::2]
+            im = filter2(im, win, 'valid')[::2, ::2]
+
+        gt_sum_sq, im_sum_sq, gt_im_sum_mul = _get_sums(
+            gt, im, win, mode='valid')
+        sigmagt_sq, sigmaim_sq, sigmagt_im = _get_sigmas(
+            gt, im, win, mode='valid', sums=(gt_sum_sq,
+                                             im_sum_sq, gt_im_sum_mul))
+
+        sigmagt_sq[sigmagt_sq < 0] = 0
+        sigmaim_sq[sigmaim_sq < 0] = 0
+
+        g = sigmagt_im / (sigmagt_sq + EPS)
+        sv_sq = sigmaim_sq - g * sigmagt_im
+
+        g[sigmagt_sq < EPS] = 0
+        sv_sq[sigmagt_sq < EPS] = sigmaim_sq[sigmagt_sq < EPS]
+        sigmagt_sq[sigmagt_sq < EPS] = 0
+
+        g[sigmaim_sq < EPS] = 0
+        sv_sq[sigmaim_sq < EPS] = 0
+
+        sv_sq[g < 0] = sigmaim_sq[g < 0]
+        g[g < 0] = 0
+        sv_sq[sv_sq <= EPS] = EimS
+
+        num += np.sum(np.log10(1.0 + (g**2.) *
+                               sigmagt_sq / (sv_sq + sigma_nsq)))
+        den += np.sum(np.log10(1.0 + sigmagt_sq / sigma_nsq))
+
+    return num / den
