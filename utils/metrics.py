@@ -5,6 +5,7 @@ from scipy import signal
 import numpy as np
 import math
 import cv2
+import sklearn.metrics as skm
 
 # imeak Signal to Noise Ratio
 
@@ -185,3 +186,50 @@ def PBVIF(gt, im, sigma_nsq=2):
         den += np.sum(np.log10(1.0 + sigmagt_sq / sigma_nsq))
 
     return num / den
+
+
+# IOU Intersection over Function
+def IOU(gt, im):
+    intersection = np.logical_and(target, im)
+    union = np.logical_or(target, im)
+    iou_score = np.sum(intersection) / np.sum(union)
+
+
+# Confusion confusion_matrix for 2D images
+def _conf_mat(gt, im):
+    return skm.confusion_matrix(gt.ravel(), im.ravel())
+
+
+# Accuracy score
+def accuracyScore(gt, im):
+    return skm.accuracy_score(gt.ravel(), im.ravel())
+
+
+# Balanced Accuracy Score
+def balancedAccScore(gt, im):
+    return skm.balanced_accuracy_score(gt.ravel(), im.ravel())
+
+
+# F1 score
+def F1(gt, im, average='binary'):
+    return skm.f1_score(gt.ravel(), im.ravel())
+
+
+# Hamming Loss
+def hamming(gt, im):
+    return skm.hamming_loss(gt.ravel(), im.ravel())
+
+
+# Jaccard index
+def jaccard(gt, im):
+    return skm.jaccard_score(gt.ravel(), im.raval())
+
+
+# Precision score
+def precision(gt, im):
+    return skm.precision_score(gt.ravel(), im.ravel())
+
+
+# Recall Score
+def recall(gt, im):
+    return skm.recall_score(gt.ravel(), im.ravel())
