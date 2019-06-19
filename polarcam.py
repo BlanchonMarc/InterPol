@@ -90,6 +90,7 @@ class Polaim():
         if raw.dtype == 'uint16':
             self.depth = 16
 
+        self.method = method
         # --- Apply the flat field correction
         # self.raw = np.asarray((raw * FLATF) / FLATF.max(), dtype=self.raw.dtype)
 
@@ -338,10 +339,11 @@ if __name__ == '__main__':
     # print(f'PID is : {pid}')
     # input("Press Enter to continue...")
     # os.spawnl(os.P_NOWAIT, f'psrecord {pid} --log activity.txt')
-
-    timer.tic()
-    POLA = Polaim('images/image_00001.tiff', method='bilinear')
-    timer.toc()
+    with np.errstate(divide='ignore', invalid='ignore'):
+        timer.tic()
+        POLA = Polaim('images/image_00001.tiff', method='bilinear')
+        print(POLA.method)
+        timer.toc()
 
     # test_images.create_test_img(POLA)
 
