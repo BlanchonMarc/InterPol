@@ -333,6 +333,141 @@ def raw2quad(self, raw, method='none', pixels_order=Pixorder.polarcamV2):
     return np.asarray(images[pixels_order.value, :, :], dtype=raw.dtype)
 
 
+class PolaGT():
+    """Class that describes pixelated images -- version 2018"""
+
+    def __init__(self, im1, im2, im3, im4, pixels_order=Pixorder.polarcamV2):
+        """ Initialization method """
+
+        # --- Open the image if filename provided
+        if isinstance(im1, str):
+            im1 = pl.imread(im1)
+
+        if isinstance(im2, str):
+            im2 = pl.imread(im2)
+
+        if isinstance(im3, str):
+            im3 = pl.imread(im3)
+
+        if isinstance(im4, str):
+            im4 = pl.imread(im4)
+
+        self.depth = 8  # 8bit depth by default
+
+        # --- In cas of 10 bit depth convert into the right range
+        if im1.dtype == 'uint16':
+            self.depth = 16
+
+        # --- Apply the flat field correction
+        # self.raw = np.asarray((raw * FLATF) / FLATF.max(), dtype=self.raw.dtype)
+
+        self.images = np.array([im1, im2, im3, im4])
+        self.images = self.images[pixels_order.value, :, :]
+
+        # --- Compute the 3 stokes parameters
+        mat = np.array([[0.5, 0.5, 0.5, 0.5],
+                        [1.0, 0.0, -1., 0.0],
+                        [0.0, 1.0, 0.0, -1.]])
+
+        self.stokes = np.tensordot(mat, self.images, 1)
+
+        # --- Error estimation
+        imat = 0.5 * np.array([[1, 1, 0.],
+                               [1, 0, 1.],
+                               [1, -1, 0],
+                               [1, 0, -1]])
+
+        self.error = sum(
+            (self.images - np.tensordot(np.dot(imat, mat), self.images, 1))**2, 0)
+
+    @property
+    def inte(self):
+        """Return intensity image"""
+        return self.stokes[0]
+
+    @property
+    def aop(self):
+        """Return aop image"""
+        return np.mod(np.arctan2(self.stokes[2], self.stokes[1]) / 2., np.pi)
+
+    @property
+    def dop(self):
+        """Return dop image"""
+        return np.divide(np.sqrt(self.stokes[2]**2, self.stokes[1]**2),
+                         self.stokes[0], out=np.zeros_like(self.stokes[0]),
+                         where=self.stokes[0] != 0)
+
+    def rgb_aop(self, colormap='hsv', dop_min=0.0, opencv=False):
+        r""" Given a Polaim object return a RGB image of the aop
+
+        Parameters
+        ----------
+        colormap : string
+            colormap used for aop
+        opencv : boolean
+            assume opencv color representation convention
+        aop_only : boolean
+            assume dop=1 and constant intensity
+
+        Return
+        ------
+        col : 3D array
+            RGB image representing the aop
+
+        Examples
+        --------
+        >>> imp.aop2rgb()
+        """
+
+        newaop = np.ma.array(self.aop.copy())  # convert into masked array
+        newaop.mask = self.dop <= dop_min
+        cmap = pl.get_cmap(colormap)
+        cmap.set_bad((0., 0., 0.))
+        # cmap.set_under((0, 0, 0))
+        # cmap.set_over((0, 0, 0))
+        aop_rgb = cmap(np.mod(newaop, np.pi) / np.pi)
+
+        if opencv:  # opencv compatibilty
+            return np.uint8(aop_rgb[:, :, [2, 1, 0]] * 255)
+
+        return aop_rgb
+
+    def rgb_pola(self, dop_max=1.0, dop_min=0.0, opencv=False):
+        r""" Given a Polaim object return a RGB image
+        with HSV mapping
+
+        Parameters
+        ----------
+        dop_max : floatting number
+            maximum authorized value for dop
+        opencv : boolean
+            assume opencv color representation convention
+
+        Return
+        ------
+        col : 3D array
+            RGB image representing the aop
+
+        Examples
+        --------
+        >>> imp.pola2rgb()
+        """
+
+        hsv = np.zeros(self.aop.shape + (3, ))
+        # -- Normalization in [0. 1.]
+        hsv[:, :, 2] = self.inte / 2. / (2**self.depth - 1)
+        hsv[:, :, 1] = np.minimum(self.dop / dop_max, 1)
+        hsv[:, :, 0] = self.aop / np.pi
+
+        hsv[self.dop <= dop_min, :] = (0., 0., 0.)
+
+        # to be checked
+        rgb = hsv_to_rgb(hsv)
+        if opencv:  # opencv compatibilty
+            return np.uint8(rgb[:, :, [2, 1, 0]] * 255)
+        return rgb
+
+
 if __name__ == '__main__':
     # pid = os.getpid()
     #
